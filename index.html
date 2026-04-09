@@ -4,97 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Outil météo compétition</title>
-<style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: system-ui, sans-serif; background: #f4f4f2; color: #1a1a1a; font-size: 14px; }
-
-  header { background: #1a3a5c; color: white; padding: 14px 20px; display: flex; align-items: center; justify-content: space-between; }
-  header h1 { font-size: 16px; font-weight: 600; }
-  header span { font-size: 12px; opacity: 0.75; }
-
-  .tabs { display: flex; background: #12293f; }
-  .tab { flex: 1; padding: 10px 6px; text-align: center; font-size: 12px; color: #a0b8cc; cursor: pointer; border-bottom: 3px solid transparent; transition: all 0.15s; }
-  .tab.active { color: white; border-bottom-color: #4ba3e3; }
-  .tab:hover:not(.active) { background: #1a3a5c; }
-
-  .page { display: none; padding: 14px; }
-  .page.active { display: block; }
-
-  .section { background: white; border-radius: 8px; border: 1px solid #ddd; margin-bottom: 12px; overflow: hidden; }
-  .section-header { background: #eef3f8; padding: 8px 12px; font-size: 12px; font-weight: 600; color: #1a3a5c; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid #ddd; }
-
-  .row { display: flex; align-items: center; padding: 7px 12px; border-bottom: 1px solid #f0f0f0; gap: 8px; }
-  .row:last-child { border-bottom: none; }
-  .row-label { flex: 1; font-size: 13px; color: #333; }
-  .row-sub { font-size: 11px; color: #888; }
-
-  .lights { display: flex; gap: 5px; align-items: center; }
-  .light { width: 22px; height: 22px; border-radius: 50%; border: 2px solid #ccc; cursor: pointer; transition: transform 0.1s, border-color 0.1s; position: relative; }
-  .light:hover { transform: scale(1.15); }
-  .light.green  { background: #d0f0d0; }
-  .light.orange { background: #fde8c0; }
-  .light.red    { background: #fcd0cc; }
-  .light.green.active  { background: #2ecc71; border-color: #27ae60; }
-  .light.orange.active { background: #f39c12; border-color: #d68910; }
-  .light.red.active    { background: #e74c3c; border-color: #c0392b; }
-
-  .models { display: flex; flex-wrap: wrap; gap: 6px; padding: 10px 12px; }
-  .model-tag { background: #e8f0fb; color: #1a3a5c; border-radius: 12px; padding: 4px 10px; font-size: 11px; font-weight: 500; cursor: pointer; border: 1.5px solid transparent; transition: all 0.15s; text-decoration: none; display: inline-block; }
-  .model-tag:hover { background: #cce0f5; border-color: #4ba3e3; }
-  .model-tag.checked { background: #1a3a5c; color: white; border-color: #1a3a5c; }
-
-  .sites { display: flex; flex-wrap: wrap; gap: 5px; padding: 8px 12px; }
-  .site-link { font-size: 11px; color: #1a6bc7; text-decoration: none; background: #f0f6ff; padding: 3px 8px; border-radius: 4px; border: 1px solid #c5daf5; }
-  .site-link:hover { background: #deeeff; }
-
-  .verdict { display: flex; align-items: center; gap: 10px; padding: 12px; background: #fff; border-radius: 8px; border: 1.5px solid #ddd; margin-bottom: 12px; }
-  .verdict-label { font-size: 13px; font-weight: 600; color: #333; flex: 1; }
-  .verdict-btn { padding: 7px 18px; border-radius: 20px; border: 2px solid; font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.15s; background: white; }
-  .verdict-btn.go  { border-color: #2ecc71; color: #27ae60; }
-  .verdict-btn.go.active  { background: #2ecc71; color: white; }
-  .verdict-btn.wait { border-color: #f39c12; color: #d68910; }
-  .verdict-btn.wait.active { background: #f39c12; color: white; }
-  .verdict-btn.stop { border-color: #e74c3c; color: #c0392b; }
-  .verdict-btn.stop.active { background: #e74c3c; color: white; }
-
-  .confidence-bar { padding: 10px 12px; }
-  .conf-label { font-size: 11px; color: #777; margin-bottom: 4px; }
-  .conf-track { height: 8px; background: #eee; border-radius: 4px; overflow: hidden; position: relative; }
-  .conf-fill { height: 100%; border-radius: 4px; transition: width 0.3s; }
-  .conf-value { font-size: 13px; font-weight: 600; margin-top: 4px; }
-
-  .obs-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding: 10px 12px; }
-  .obs-item { background: #f8f8f8; border-radius: 6px; padding: 8px 10px; border: 1px solid #e8e8e8; }
-  .obs-item label { font-size: 11px; color: #888; display: block; margin-bottom: 4px; }
-  .obs-item select, .obs-item input[type=text] { width: 100%; font-size: 12px; padding: 4px 6px; border: 1px solid #ccc; border-radius: 4px; background: white; color: #333; }
-
-  .wind-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; padding: 8px 12px; }
-  .wind-cell { text-align: center; background: #f8f9fb; border-radius: 6px; padding: 8px 4px; border: 1.5px solid transparent; cursor: pointer; }
-  .wind-cell.inf { }
-  .wind-cell.med { }
-  .wind-cell.sup { }
-  .wind-cell.inf.active  { border-color: #2ecc71; background: #e8faf0; }
-  .wind-cell.med.active  { border-color: #f39c12; background: #fef5e4; }
-  .wind-cell.sup.active  { border-color: #e74c3c; background: #fdf0ef; }
-  .wind-cell .wval { font-size: 12px; font-weight: 600; color: #333; }
-  .wind-cell .wlab { font-size: 10px; color: #999; margin-top: 2px; }
-
-  .summary-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding: 12px; }
-  .sum-card { background: #f8f8f8; border-radius: 6px; padding: 8px 10px; border: 1px solid #eee; }
-  .sum-card .sval { font-size: 18px; font-weight: 700; }
-  .sum-card .slab { font-size: 11px; color: #888; }
-  .sum-card.green .sval { color: #27ae60; }
-  .sum-card.orange .sval { color: #d68910; }
-  .sum-card.red .sval { color: #c0392b; }
-  .sum-card.neutral .sval { color: #1a3a5c; }
-
-  .note-area { width: 100%; border: 1px solid #ddd; border-radius: 6px; padding: 8px; font-size: 12px; resize: vertical; min-height: 60px; font-family: inherit; color: #333; background: white; }
-
-  .print-btn { width: 100%; padding: 11px; background: #1a3a5c; color: white; border: none; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; margin-top: 4px; }
-  .print-btn:hover { background: #22507a; }
-  .reset-btn { width: 100%; padding: 9px; background: white; color: #c0392b; border: 2px solid #e74c3c; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; margin-top: 8px; }
-  .reset-btn:hover { background: #fff5f5; }
-</style>
+<link rel="stylesheet" href="app.css">
 </head>
 <body>
 
@@ -109,6 +19,7 @@
   <div class="tab" onclick="switchPage(2)">Jour J</div>
   <div class="tab" onclick="switchPage(3)">Bilan</div>
 </div>
+
 
 <!-- ========== PAGE J-3/J-4 ========== -->
 <div class="page active" id="page0">
@@ -143,148 +54,18 @@
     <div class="section-header">Vent — seuils indicatifs</div>
     <div class="wind-row">
       <div class="wind-cell inf" onclick="setWind(0,'inf')">
-        <div class="wval">&lt; 10 km/h</div>
-        <div class="wlab">Faible</div>
+        <div class="wval">&lt; 10 km/h</div><div class="wlab">Faible</div>
       </div>
       <div class="wind-cell med" onclick="setWind(0,'med')">
-        <div class="wval">10–20 km/h</div>
-        <div class="wlab">Moyen</div>
+        <div class="wval">10–20 km/h</div><div class="wlab">Moyen</div>
       </div>
       <div class="wind-cell sup" onclick="setWind(0,'sup')">
-        <div class="wval">&gt; 20 km/h</div>
-        <div class="wlab">Fort</div>
+        <div class="wval">&gt; 20 km/h</div><div class="wlab">Fort</div>
       </div>
     </div>
   </div>
 
-  <div class="section">
-    <div class="section-header">Analyse des masses d'air</div>
-    <div class="row">
-      <div class="row-label">Anticyclone / marais barométrique ?</div>
-      <div class="lights">
-        <div class="light green"  onclick="toggleLight(this)"></div>
-        <div class="light orange" onclick="toggleLight(this)"></div>
-        <div class="light red"    onclick="toggleLight(this)"></div>
-      </div>
-    </div>
-    <div class="row">
-      <div class="row-label">Dépression / front / traîne active ?</div>
-      <div class="lights">
-        <div class="light green"  onclick="toggleLight(this)"></div>
-        <div class="light orange" onclick="toggleLight(this)"></div>
-        <div class="light red"    onclick="toggleLight(this)"></div>
-      </div>
-    </div>
-  </div>
-
-  <div class="section">
-    <div class="section-header">Vent météo</div>
-    <div class="row">
-      <div class="row-label">Vent moyen au sol<br><span class="row-sub">Force, direction</span></div>
-      <div class="lights">
-        <div class="light green"  onclick="toggleLight(this)"></div>
-        <div class="light orange" onclick="toggleLight(this)"></div>
-        <div class="light red"    onclick="toggleLight(this)"></div>
-      </div>
-    </div>
-    <div class="row">
-      <div class="row-label">En altitude<br><span class="row-sub">Coupes verticales</span></div>
-      <div class="lights">
-        <div class="light green"  onclick="toggleLight(this)"></div>
-        <div class="light orange" onclick="toggleLight(this)"></div>
-        <div class="light red"    onclick="toggleLight(this)"></div>
-      </div>
-    </div>
-    <div class="row">
-      <div class="row-label">Brises<br><span class="row-sub">Force / direction</span></div>
-      <div class="lights">
-        <div class="light green"  onclick="toggleLight(this)"></div>
-        <div class="light orange" onclick="toggleLight(this)"></div>
-        <div class="light red"    onclick="toggleLight(this)"></div>
-      </div>
-    </div>
-    <div class="row">
-      <div class="row-label" style="color:#c0392b;">Pièges aérologiques<br><span class="row-sub">Foehn, rafales, cisaillements</span></div>
-      <div class="lights">
-        <div class="light green"  onclick="toggleLight(this)"></div>
-        <div class="light orange" onclick="toggleLight(this)"></div>
-        <div class="light red"    onclick="toggleLight(this)"></div>
-      </div>
-    </div>
-  </div>
-
-  <div class="section">
-    <div class="section-header">Nébulosité / Humidité</div>
-    <div class="row">
-      <div class="row-label">Base nuages / octas<br><span class="row-sub">Étalements, sur-développements Cb</span></div>
-      <div class="lights">
-        <div class="light green"  onclick="toggleLight(this)"></div>
-        <div class="light orange" onclick="toggleLight(this)"></div>
-        <div class="light red"    onclick="toggleLight(this)"></div>
-      </div>
-    </div>
-    <div class="row">
-      <div class="row-label">Précipitations<br><span class="row-sub">Pluie, grêle, neige, brouillard</span></div>
-      <div class="lights">
-        <div class="light green"  onclick="toggleLight(this)"></div>
-        <div class="light orange" onclick="toggleLight(this)"></div>
-        <div class="light red"    onclick="toggleLight(this)"></div>
-      </div>
-    </div>
-    <div class="row">
-      <div class="row-label">Convection / sondage<br><span class="row-sub">Inversion, couche d'arrêt</span></div>
-      <div class="lights">
-        <div class="light green"  onclick="toggleLight(this)"></div>
-        <div class="light orange" onclick="toggleLight(this)"></div>
-        <div class="light red"    onclick="toggleLight(this)"></div>
-      </div>
-    </div>
-    <div class="row">
-      <div class="row-label" style="color:#c0392b;">Pièges aérologiques<br><span class="row-sub">Dust, orage Cb, cisaillements</span></div>
-      <div class="lights">
-        <div class="light green"  onclick="toggleLight(this)"></div>
-        <div class="light orange" onclick="toggleLight(this)"></div>
-        <div class="light red"    onclick="toggleLight(this)"></div>
-      </div>
-    </div>
-  </div>
-
-  <div class="section">
-    <div class="section-header">Stabilité / Instabilité</div>
-    <div class="row">
-      <div class="row-label">Indice global de stabilité</div>
-      <div class="lights">
-        <div class="light green"  onclick="toggleLight(this)"></div>
-        <div class="light orange" onclick="toggleLight(this)"></div>
-        <div class="light red"    onclick="toggleLight(this)"></div>
-      </div>
-    </div>
-  </div>
-
-  <div class="section">
-    <div class="section-header">Indice de confiance</div>
-    <div class="row">
-      <div class="row-label">Cohérence / Fiabilité des modèles</div>
-      <div class="lights">
-        <div class="light green"  onclick="toggleLight(this)"></div>
-        <div class="light orange" onclick="toggleLight(this)"></div>
-        <div class="light red"    onclick="toggleLight(this)"></div>
-      </div>
-    </div>
-    <div class="row">
-      <div class="row-label" style="color:#c0392b;">Sécurité / Risques</div>
-      <div class="lights">
-        <div class="light green"  onclick="toggleLight(this)"></div>
-        <div class="light orange" onclick="toggleLight(this)"></div>
-        <div class="light red"    onclick="toggleLight(this)"></div>
-      </div>
-    </div>
-    <div class="confidence-bar" id="conf0">
-      <div class="conf-label">Score favorable estimé</div>
-      <div class="conf-track"><div class="conf-fill" id="confill0" style="width:0%;background:#2ecc71;"></div></div>
-      <div class="conf-value" id="confval0">—</div>
-    </div>
-  </div>
+  <div id="eval-sections-0"></div>
 
   <div class="section">
     <div class="section-header">Notes J-3/J-4</div>
@@ -293,6 +74,7 @@
     </div>
   </div>
 </div>
+
 
 <!-- ========== PAGE J-1/J-2 ========== -->
 <div class="page" id="page1">
@@ -328,55 +110,19 @@
   <div class="section">
     <div class="section-header">Vent — seuils indicatifs</div>
     <div class="wind-row">
-      <div class="wind-cell inf" onclick="setWind(1,'inf')"><div class="wval">&lt; 10 km/h</div><div class="wlab">Faible</div></div>
-      <div class="wind-cell med" onclick="setWind(1,'med')"><div class="wval">10–20 km/h</div><div class="wlab">Moyen</div></div>
-      <div class="wind-cell sup" onclick="setWind(1,'sup')"><div class="wval">&gt; 20 km/h</div><div class="wlab">Fort</div></div>
+      <div class="wind-cell inf" onclick="setWind(1,'inf')">
+        <div class="wval">&lt; 10 km/h</div><div class="wlab">Faible</div>
+      </div>
+      <div class="wind-cell med" onclick="setWind(1,'med')">
+        <div class="wval">10–20 km/h</div><div class="wlab">Moyen</div>
+      </div>
+      <div class="wind-cell sup" onclick="setWind(1,'sup')">
+        <div class="wval">&gt; 20 km/h</div><div class="wlab">Fort</div>
+      </div>
     </div>
   </div>
 
-  <div class="section">
-    <div class="section-header">Analyse des masses d'air</div>
-    <div class="row">
-      <div class="row-label">Anticyclone / marais barométrique ?</div>
-      <div class="lights"><div class="light green" onclick="toggleLight(this)"></div><div class="light orange" onclick="toggleLight(this)"></div><div class="light red" onclick="toggleLight(this)"></div></div>
-    </div>
-    <div class="row">
-      <div class="row-label">Dépression / front / traîne active ?</div>
-      <div class="lights"><div class="light green" onclick="toggleLight(this)"></div><div class="light orange" onclick="toggleLight(this)"></div><div class="light red" onclick="toggleLight(this)"></div></div>
-    </div>
-  </div>
-
-  <div class="section">
-    <div class="section-header">Vent météo</div>
-    <div class="row"><div class="row-label">Vent moyen au sol<br><span class="row-sub">Force, direction</span></div><div class="lights"><div class="light green" onclick="toggleLight(this)"></div><div class="light orange" onclick="toggleLight(this)"></div><div class="light red" onclick="toggleLight(this)"></div></div></div>
-    <div class="row"><div class="row-label">En altitude<br><span class="row-sub">Coupes verticales</span></div><div class="lights"><div class="light green" onclick="toggleLight(this)"></div><div class="light orange" onclick="toggleLight(this)"></div><div class="light red" onclick="toggleLight(this)"></div></div></div>
-    <div class="row"><div class="row-label">Brises<br><span class="row-sub">Force / direction</span></div><div class="lights"><div class="light green" onclick="toggleLight(this)"></div><div class="light orange" onclick="toggleLight(this)"></div><div class="light red" onclick="toggleLight(this)"></div></div></div>
-    <div class="row"><div class="row-label" style="color:#c0392b;">Pièges aérologiques<br><span class="row-sub">Foehn, rafales, cisaillements</span></div><div class="lights"><div class="light green" onclick="toggleLight(this)"></div><div class="light orange" onclick="toggleLight(this)"></div><div class="light red" onclick="toggleLight(this)"></div></div></div>
-  </div>
-
-  <div class="section">
-    <div class="section-header">Nébulosité / Humidité</div>
-    <div class="row"><div class="row-label">Base nuages / octas<br><span class="row-sub">Étalements, sur-développements</span></div><div class="lights"><div class="light green" onclick="toggleLight(this)"></div><div class="light orange" onclick="toggleLight(this)"></div><div class="light red" onclick="toggleLight(this)"></div></div></div>
-    <div class="row"><div class="row-label">Précipitations<br><span class="row-sub">Pluie, grêle, neige, brouillard</span></div><div class="lights"><div class="light green" onclick="toggleLight(this)"></div><div class="light orange" onclick="toggleLight(this)"></div><div class="light red" onclick="toggleLight(this)"></div></div></div>
-    <div class="row"><div class="row-label">Convection / sondage<br><span class="row-sub">Inversion, couche d'arrêt</span></div><div class="lights"><div class="light green" onclick="toggleLight(this)"></div><div class="light orange" onclick="toggleLight(this)"></div><div class="light red" onclick="toggleLight(this)"></div></div></div>
-    <div class="row"><div class="row-label" style="color:#c0392b;">Pièges aérologiques<br><span class="row-sub">Dust, orage Cb, cisaillements</span></div><div class="lights"><div class="light green" onclick="toggleLight(this)"></div><div class="light orange" onclick="toggleLight(this)"></div><div class="light red" onclick="toggleLight(this)"></div></div></div>
-  </div>
-
-  <div class="section">
-    <div class="section-header">Stabilité / Instabilité</div>
-    <div class="row"><div class="row-label">Indice global de stabilité</div><div class="lights"><div class="light green" onclick="toggleLight(this)"></div><div class="light orange" onclick="toggleLight(this)"></div><div class="light red" onclick="toggleLight(this)"></div></div></div>
-  </div>
-
-  <div class="section">
-    <div class="section-header">Indice de confiance</div>
-    <div class="row"><div class="row-label">Cohérence / Fiabilité des modèles</div><div class="lights"><div class="light green" onclick="toggleLight(this)"></div><div class="light orange" onclick="toggleLight(this)"></div><div class="light red" onclick="toggleLight(this)"></div></div></div>
-    <div class="row"><div class="row-label" style="color:#c0392b;">Sécurité / Risques</div><div class="lights"><div class="light green" onclick="toggleLight(this)"></div><div class="light orange" onclick="toggleLight(this)"></div><div class="light red" onclick="toggleLight(this)"></div></div></div>
-    <div class="confidence-bar">
-      <div class="conf-label">Score favorable estimé</div>
-      <div class="conf-track"><div class="conf-fill" id="confill1" style="width:0%;background:#2ecc71;"></div></div>
-      <div class="conf-value" id="confval1">—</div>
-    </div>
-  </div>
+  <div id="eval-sections-1"></div>
 
   <div class="section">
     <div class="section-header">Notes J-1/J-2</div>
@@ -385,6 +131,7 @@
     </div>
   </div>
 </div>
+
 
 <!-- ========== PAGE JOUR J ========== -->
 <div class="page" id="page2">
@@ -421,40 +168,20 @@
   <div class="section">
     <div class="section-header">Vent — seuils indicatifs</div>
     <div class="wind-row">
-      <div class="wind-cell inf" onclick="setWind(2,'inf')"><div class="wval">&lt; 10 km/h</div><div class="wlab">Faible</div></div>
-      <div class="wind-cell med" onclick="setWind(2,'med')"><div class="wval">10–20 km/h</div><div class="wlab">Moyen</div></div>
-      <div class="wind-cell sup" onclick="setWind(2,'sup')"><div class="wval">&gt; 20 km/h</div><div class="wlab">Fort</div></div>
+      <div class="wind-cell inf" onclick="setWind(2,'inf')">
+        <div class="wval">&lt; 10 km/h</div><div class="wlab">Faible</div>
+      </div>
+      <div class="wind-cell med" onclick="setWind(2,'med')">
+        <div class="wval">10–20 km/h</div><div class="wlab">Moyen</div>
+      </div>
+      <div class="wind-cell sup" onclick="setWind(2,'sup')">
+        <div class="wval">&gt; 20 km/h</div><div class="wlab">Fort</div>
+      </div>
     </div>
   </div>
 
-  <div class="section">
-    <div class="section-header">Analyse des masses d'air</div>
-    <div class="row"><div class="row-label">Anticyclone / marais barométrique ?</div><div class="lights"><div class="light green" onclick="toggleLight(this)"></div><div class="light orange" onclick="toggleLight(this)"></div><div class="light red" onclick="toggleLight(this)"></div></div></div>
-    <div class="row"><div class="row-label">Dépression / front / traîne active ?</div><div class="lights"><div class="light green" onclick="toggleLight(this)"></div><div class="light orange" onclick="toggleLight(this)"></div><div class="light red" onclick="toggleLight(this)"></div></div></div>
-  </div>
+  <div id="eval-sections-2"></div>
 
-  <div class="section">
-    <div class="section-header">Vent météo</div>
-    <div class="row"><div class="row-label">Vent moyen au sol<br><span class="row-sub">Force, direction</span></div><div class="lights"><div class="light green" onclick="toggleLight(this)"></div><div class="light orange" onclick="toggleLight(this)"></div><div class="light red" onclick="toggleLight(this)"></div></div></div>
-    <div class="row"><div class="row-label">En altitude<br><span class="row-sub">Coupes verticales</span></div><div class="lights"><div class="light green" onclick="toggleLight(this)"></div><div class="light orange" onclick="toggleLight(this)"></div><div class="light red" onclick="toggleLight(this)"></div></div></div>
-    <div class="row"><div class="row-label">Brises<br><span class="row-sub">Force / direction</span></div><div class="lights"><div class="light green" onclick="toggleLight(this)"></div><div class="light orange" onclick="toggleLight(this)"></div><div class="light red" onclick="toggleLight(this)"></div></div></div>
-    <div class="row"><div class="row-label" style="color:#c0392b;">Pièges aérologiques<br><span class="row-sub">Foehn, rafales, cisaillements</span></div><div class="lights"><div class="light green" onclick="toggleLight(this)"></div><div class="light orange" onclick="toggleLight(this)"></div><div class="light red" onclick="toggleLight(this)"></div></div></div>
-  </div>
-
-  <div class="section">
-    <div class="section-header">Nébulosité / Humidité</div>
-    <div class="row"><div class="row-label">Base nuages / octas<br><span class="row-sub">Étalements, sur-développements</span></div><div class="lights"><div class="light green" onclick="toggleLight(this)"></div><div class="light orange" onclick="toggleLight(this)"></div><div class="light red" onclick="toggleLight(this)"></div></div></div>
-    <div class="row"><div class="row-label">Précipitations<br><span class="row-sub">Pluie, grêle, neige, brouillard</span></div><div class="lights"><div class="light green" onclick="toggleLight(this)"></div><div class="light orange" onclick="toggleLight(this)"></div><div class="light red" onclick="toggleLight(this)"></div></div></div>
-    <div class="row"><div class="row-label">Convection / sondage<br><span class="row-sub">Inversion, couche d'arrêt</span></div><div class="lights"><div class="light green" onclick="toggleLight(this)"></div><div class="light orange" onclick="toggleLight(this)"></div><div class="light red" onclick="toggleLight(this)"></div></div></div>
-    <div class="row"><div class="row-label" style="color:#c0392b;">Pièges aérologiques<br><span class="row-sub">Dust, orage Cb, cisaillements</span></div><div class="lights"><div class="light green" onclick="toggleLight(this)"></div><div class="light orange" onclick="toggleLight(this)"></div><div class="light red" onclick="toggleLight(this)"></div></div></div>
-  </div>
-
-  <div class="section">
-    <div class="section-header">Stabilité / Instabilité</div>
-    <div class="row"><div class="row-label">Indice global de stabilité</div><div class="lights"><div class="light green" onclick="toggleLight(this)"></div><div class="light orange" onclick="toggleLight(this)"></div><div class="light red" onclick="toggleLight(this)"></div></div></div>
-  </div>
-
-  <!-- Observations sur site — spécifique Jour J -->
   <div class="section">
     <div class="section-header">Observations sur site (Jour J)</div>
     <div class="obs-grid">
@@ -474,17 +201,6 @@
   </div>
 
   <div class="section">
-    <div class="section-header">Indice de confiance</div>
-    <div class="row"><div class="row-label">Cohérence / Fiabilité des modèles</div><div class="lights"><div class="light green" onclick="toggleLight(this)"></div><div class="light orange" onclick="toggleLight(this)"></div><div class="light red" onclick="toggleLight(this)"></div></div></div>
-    <div class="row"><div class="row-label" style="color:#c0392b;">Sécurité / Risques</div><div class="lights"><div class="light green" onclick="toggleLight(this)"></div><div class="light orange" onclick="toggleLight(this)"></div><div class="light red" onclick="toggleLight(this)"></div></div></div>
-    <div class="confidence-bar">
-      <div class="conf-label">Score favorable estimé</div>
-      <div class="conf-track"><div class="conf-fill" id="confill2" style="width:0%;background:#2ecc71;"></div></div>
-      <div class="conf-value" id="confval2">—</div>
-    </div>
-  </div>
-
-  <div class="section">
     <div class="section-header">Notes Jour J</div>
     <div style="padding:10px 12px;">
       <textarea class="note-area" id="note2" placeholder="Conditions observées, décision finale…"></textarea>
@@ -492,115 +208,67 @@
   </div>
 </div>
 
+
 <!-- ========== PAGE BILAN ========== -->
 <div class="page" id="page3">
+
   <div class="section">
     <div class="section-header">Récapitulatif des verdicts</div>
     <div class="summary-grid" id="summary-verdicts"></div>
   </div>
+
   <div class="section">
     <div class="section-header">Scores de confiance</div>
     <div class="summary-grid" id="summary-scores"></div>
   </div>
+
   <div class="section">
     <div class="section-header">Décision finale recommandée</div>
     <div style="padding:14px 12px; font-size:20px; font-weight:700; text-align:center;" id="final-decision">—</div>
   </div>
-  <div style="padding:0 0 16px;">
-    <button class="print-btn" onclick="window.print()">Imprimer / Exporter PDF</button>
-    <button class="reset-btn" onclick="resetAll()">Réinitialiser tout</button>
+
+  <!-- Actions -->
+  <div class="action-row" style="margin-bottom:8px;">
+    <button class="action-row save-btn"          onclick="openSaveModal()">💾 Sauvegarder</button>
+    <button class="action-row export-current-btn" onclick="exportCurrent()">↓ Export JSON</button>
+  </div>
+  <div class="action-row" style="margin-bottom:12px;">
+    <button class="action-row export-all-btn"    onclick="exportAll()">↓ Tout exporter</button>
+    <button class="action-row import-btn"        onclick="triggerImport()">↑ Importer JSON</button>
+  </div>
+  <div class="action-row" style="margin-bottom:12px;">
+    <button class="action-row print-btn"         onclick="window.print()">🖨 Imprimer / PDF</button>
+    <button class="action-row reset-btn"         onclick="resetAll()">↺ Réinitialiser</button>
+  </div>
+
+  <!-- Saved competitions list -->
+  <div class="section">
+    <div class="section-header">Compétitions sauvegardées</div>
+    <div id="competitions-list"></div>
+  </div>
+
+</div><!-- /page3 -->
+
+
+<!-- ========== SAVE MODAL ========== -->
+<div class="modal-backdrop" id="save-modal">
+  <div class="modal-box">
+    <h2>Sauvegarder la compétition</h2>
+    <input type="text" id="save-name-input" placeholder="Nom de la compétition…" maxlength="80">
+    <div class="modal-btns">
+      <button class="modal-ok"     onclick="confirmSave()">Sauvegarder</button>
+      <button class="modal-cancel" onclick="closeSaveModal()">Annuler</button>
+    </div>
   </div>
 </div>
 
-<script>
-const verdicts = [null, null, null];
-const winds    = [null, null, null];
+<!-- Hidden file input for JSON import -->
+<input type="file" id="import-file-input" accept=".json,application/json"
+       style="display:none" onchange="handleImportFile(this)">
 
-document.getElementById('date-display').textContent = new Date().toLocaleDateString('fr-FR', {weekday:'short',day:'numeric',month:'short',year:'numeric'});
+<!-- Toast notification -->
+<div id="toast"></div>
 
-function switchPage(i) {
-  document.querySelectorAll('.page').forEach((p,j) => p.classList.toggle('active', i===j));
-  document.querySelectorAll('.tab').forEach((t,j)  => t.classList.toggle('active', i===j));
-  if (i === 3) updateBilan();
-}
-
-function toggleLight(el) {
-  const group = el.parentElement;
-  const color = el.classList[1];
-  const wasActive = el.classList.contains('active');
-  group.querySelectorAll('.light').forEach(l => l.classList.remove('active'));
-  if (!wasActive) el.classList.add('active');
-  updateConfidence(el.closest('.page'));
-}
-
-function setVerdict(page, v) {
-  verdicts[page] = v;
-  const pg = document.getElementById('page' + page);
-  pg.querySelectorAll('.verdict-btn').forEach(b => b.classList.remove('active'));
-  pg.querySelector('.verdict-btn.' + v).classList.add('active');
-}
-
-function setWind(page, w) {
-  winds[page] = w;
-  const pg = document.getElementById('page' + page);
-  pg.querySelectorAll('.wind-cell').forEach(c => c.classList.remove('active'));
-  pg.querySelector('.wind-cell.' + w).classList.add('active');
-}
-
-function updateConfidence(pg) {
-  if (!pg) return;
-  const idx = pg.id.replace('page','');
-  const lights = pg.querySelectorAll('.light');
-  let green = 0, orange = 0, red = 0, total = 0;
-  lights.forEach(l => {
-    if (!l.classList.contains('active')) return;
-    total++;
-    if (l.classList.contains('green'))  green++;
-    if (l.classList.contains('orange')) orange++;
-    if (l.classList.contains('red'))    red++;
-  });
-  if (total === 0) { document.getElementById('confill'+idx).style.width='0%'; document.getElementById('confval'+idx).textContent='—'; return; }
-  const score = Math.round((green / total) * 100);
-  const fill = document.getElementById('confill'+idx);
-  fill.style.width = score + '%';
-  fill.style.background = score >= 70 ? '#2ecc71' : score >= 40 ? '#f39c12' : '#e74c3c';
-  document.getElementById('confval'+idx).textContent = score + '% favorable';
-}
-
-function updateBilan() {
-  const labels = ['J-3/J-4', 'J-1/J-2', 'Jour J'];
-  const vLabels = {go:'Maintien ✓', wait:'En attente ~', stop:'Annulation ✗', null:'Non renseigné'};
-  const vClasses = {go:'green', wait:'orange', stop:'red', null:'neutral'};
-
-  const sv = document.getElementById('summary-verdicts');
-  sv.innerHTML = labels.map((l,i) => `<div class="sum-card ${vClasses[verdicts[i]]}"><div class="sval">${vLabels[verdicts[i]]}</div><div class="slab">${l}</div></div>`).join('');
-
-  const ss = document.getElementById('summary-scores');
-  ss.innerHTML = labels.map((l,i) => {
-    const el = document.getElementById('confval'+i);
-    const val = el ? el.textContent : '—';
-    return `<div class="sum-card neutral"><div class="sval" style="font-size:14px;">${val}</div><div class="slab">${l}</div></div>`;
-  }).join('');
-
-  const fd = document.getElementById('final-decision');
-  const counts = {go:0, wait:0, stop:0};
-  verdicts.forEach(v => { if(v) counts[v]++; });
-  if (counts.stop >= 2)      { fd.textContent='❌ Annulation recommandée'; fd.style.color='#c0392b'; }
-  else if (counts.go >= 2)   { fd.textContent='✅ Maintien recommandé'; fd.style.color='#27ae60'; }
-  else if (counts.wait >= 1) { fd.textContent='⏳ Décision en attente'; fd.style.color='#d68910'; }
-  else                       { fd.textContent='— Données insuffisantes'; fd.style.color='#888'; }
-}
-
-function resetAll() {
-  if (!confirm('Réinitialiser toutes les données ?')) return;
-  document.querySelectorAll('.light').forEach(l => l.classList.remove('active'));
-  document.querySelectorAll('.wind-cell').forEach(c => c.classList.remove('active'));
-  document.querySelectorAll('.verdict-btn').forEach(b => b.classList.remove('active'));
-  document.querySelectorAll('.note-area').forEach(t => t.value = '');
-  document.querySelectorAll('.obs-grid select').forEach(s => s.selectedIndex = 0);
-  document.querySelectorAll('.obs-grid input').forEach(i => i.value = '');
-  for(let i=0;i<3;i++){verdicts[i]=null;winds[i]=null;document.getElementById('confill'+i).style.width='0%';document.getElementById('confval'+i).textContent='—';}
-}
-</script>
+<script src="app.js"></script>
 </body>
 </html>
