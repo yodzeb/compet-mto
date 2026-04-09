@@ -2,13 +2,80 @@
 // DATA DEFINITIONS
 // ============================================================
 
+// Each model: { name, links: [{label, url}] }
 const PAGE_MODELS = [
   // 0 → J-3/J-4
-  ['ARPEGE 10', 'ICON EU 7', 'NEMS 12', 'ECMWF 9', 'WRF 5', 'GFS 25'],
+  [
+    { name: 'ARPEGE 10', links: [
+        { label: 'météociel', url: 'https://www.meteociel.fr/modeles/arpege.php?ech=3&mode=53&map=300' },
+        { label: 'météoblue', url: 'https://www.meteoblue.com/fr/meteo/cartes/le-havre_france_3003796#coords=4.89/46.66/3.28&map=windAnimation~rainbow~MFEU~10%20m%20above%20gnd~pressure2mOverlay' },
+    ]},
+    { name: 'ICON EU 7', links: [
+        { label: 'météociel', url: 'https://www.meteociel.fr/modeles/icon-eu.php?ech=3&mode=3&map=500' },
+        { label: 'windy',     url: 'https://www.windy.com/?iconEu,46.738,3.169,6,i:pressure,p:cities' },
+        { label: 'météoblue', url: 'https://www.meteoblue.com/fr/meteo/cartes/le-havre_france_3003796#coords=4.89/46.66/3.28&map=windAnimation~rainbow~ICONEU~10%20m%20above%20gnd~pressure2mOverlay' },
+    ]},
+    { name: 'NEMS 12', links: [
+        { label: 'météoblue', url: 'https://www.meteoblue.com/fr/meteo/cartes/le-havre_france_3003796#coords=4.89/46.66/3.28&map=windAnimation~rainbow~NEMS12~10%20m%20above%20gnd~pressure2mOverlay' },
+    ]},
+    { name: 'ECMWF 9', links: [
+        { label: 'météociel', url: 'https://www.meteociel.fr/modeles/ecmwf_ctrl.php?ech=1&mode=0&carte=2' },
+        { label: 'windy',     url: 'https://www.windy.com/?46.738,3.169,6,i:pressure,p:cities' },
+    ]},
+    { name: 'WRF 5', links: [
+        { label: 'météociel', url: 'https://www.meteociel.fr/modeles/wrfnmm.php?ech=3&mode=3&map=0' },
+    ]},
+    { name: 'GFS 25', links: [
+        { label: 'météociel', url: 'https://www.meteociel.fr/modeles/gfse_cartes.php?ech=6&code=0&mode=0' },
+        { label: 'windy',     url: 'https://www.windy.com/?gfs,46.738,3.169,6,i:pressure,p:cities,m:eVyagiv' },
+    ]},
+  ],
   // 1 → J-1/J-2
-  ['AROME 1,3', 'AROME 2,5', 'ICON D2', 'ICON CH1', 'NEMS 4', 'RASP'],
-  // 2 → Jour J
-  ['AROME 1,3', 'AROME 2,5', 'ICON D2', 'ICON CH1', 'NEMS 4', 'RASP'],
+  [
+    { name: 'AROME 1,3', links: [
+        { label: 'météociel', url: 'https://www.meteociel.fr/modeles/arome.php?ech=1&mode=0&map=0' },
+        { label: 'windy',     url: 'https://www.windy.com/?arome,46.738,3.169,6,i:pressure,p:cities' },
+    ]},
+    { name: 'AROME 2,5', links: [
+        { label: 'météociel', url: 'https://www.meteociel.fr/modeles/arome.php?ech=1&mode=1&map=0' },
+    ]},
+    { name: 'ICON D2', links: [
+        { label: 'météoblue', url: 'https://www.meteoblue.com/fr/meteo/cartes/le-havre_france_3003796#coords=4.89/46.66/3.28&map=windAnimation~rainbow~ICOND2~10%20m%20above%20gnd~pressure2mOverlay' },
+        { label: 'windy',     url: 'https://www.windy.com/?iconD2,46.738,3.169,6,i:pressure,p:cities' },
+    ]},
+    { name: 'ICON CH1', links: [
+        { label: 'météoblue', url: 'https://www.meteoblue.com/fr/meteo/cartes/le-havre_france_3003796#coords=4.89/46.66/3.28&map=windAnimation~rainbow~ICONCH1~10%20m%20above%20gnd~pressure2mOverlay' },
+    ]},
+    { name: 'NEMS 4', links: [
+        { label: 'météociel', url: 'https://www.meteociel.fr/modeles/nems.php?ech=1&mode=0&map=0' },
+    ]},
+    { name: 'RASP', links: [
+        { label: 'drjack',    url: 'https://www.drjack.info/cgi-bin/JRPmenu.cgi' },
+    ]},
+  ],
+  // 2 → Jour J  (same fine-mesh models as J-1/J-2)
+  [
+    { name: 'AROME 1,3', links: [
+        { label: 'météociel', url: 'https://www.meteociel.fr/modeles/arome.php?ech=1&mode=0&map=0' },
+        { label: 'windy',     url: 'https://www.windy.com/?arome,46.738,3.169,6,i:pressure,p:cities' },
+    ]},
+    { name: 'AROME 2,5', links: [
+        { label: 'météociel', url: 'https://www.meteociel.fr/modeles/arome.php?ech=1&mode=1&map=0' },
+    ]},
+    { name: 'ICON D2', links: [
+        { label: 'météoblue', url: 'https://www.meteoblue.com/fr/meteo/cartes/le-havre_france_3003796#coords=4.89/46.66/3.28&map=windAnimation~rainbow~ICOND2~10%20m%20above%20gnd~pressure2mOverlay' },
+        { label: 'windy',     url: 'https://www.windy.com/?iconD2,46.738,3.169,6,i:pressure,p:cities' },
+    ]},
+    { name: 'ICON CH1', links: [
+        { label: 'météoblue', url: 'https://www.meteoblue.com/fr/meteo/cartes/le-havre_france_3003796#coords=4.89/46.66/3.28&map=windAnimation~rainbow~ICONCH1~10%20m%20above%20gnd~pressure2mOverlay' },
+    ]},
+    { name: 'NEMS 4', links: [
+        { label: 'météociel', url: 'https://www.meteociel.fr/modeles/nems.php?ech=1&mode=0&map=0' },
+    ]},
+    { name: 'RASP', links: [
+        { label: 'drjack',    url: 'https://www.drjack.info/cgi-bin/JRPmenu.cgi' },
+    ]},
+  ],
 ];
 
 const EVAL_SECTIONS = [
@@ -111,6 +178,19 @@ function buildDayPage(p) {
     const table = document.createElement('table');
     table.className = 'eval-table';
 
+    // Equal-width columns: fixed label col + equal model cols
+    const nModels = models.length;
+    const colgroup = document.createElement('colgroup');
+    const colLabel = document.createElement('col');
+    colLabel.style.width = '150px';
+    colgroup.appendChild(colLabel);
+    for (let c = 0; c < nModels; c++) {
+      const col = document.createElement('col');
+      col.style.width = Math.floor(100 / nModels) + '%';
+      colgroup.appendChild(col);
+    }
+    table.appendChild(colgroup);
+
     const thead = document.createElement('thead');
     const headRow = document.createElement('tr');
     const thCrit = document.createElement('th');
@@ -118,7 +198,14 @@ function buildDayPage(p) {
     headRow.appendChild(thCrit);
     models.forEach(m => {
       const th = document.createElement('th');
-      th.innerHTML = '<div class="model-col-head"><span>' + m + '</span></div>';
+      const linksHtml = m.links.map(l =>
+        '<a class="model-site-link" href="' + l.url + '" target="_blank">' + l.label + '</a>'
+      ).join('');
+      th.innerHTML =
+        '<div class="model-col-head">' +
+          '<span class="model-col-name">' + m.name + '</span>' +
+          '<div class="model-col-links">' + linksHtml + '</div>' +
+        '</div>';
       headRow.appendChild(th);
     });
     thead.appendChild(headRow);
