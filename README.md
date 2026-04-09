@@ -1,12 +1,19 @@
 # Outil d'aide à la décision météo — Compétition
 
-Fichier HTML autonome (`meteo_competition.html`) pour évaluer la faisabilité d'une compétition de vol libre de J-4 jusqu'au Jour J, en s'appuyant sur une méthode simple, reproductible et structurée.
+Outil HTML pour évaluer la faisabilité d'une compétition de vol libre de J-4 jusqu'au Jour J, en s'appuyant sur une méthode simple, reproductible et structurée.
 
 ---
 
-## Utilisation
+## Fichiers
 
-Ouvrir `meteo_competition.html` dans n'importe quel navigateur moderne — aucune installation, aucune connexion internet requise pour utiliser l'outil (les liens vers les sites météo nécessitent une connexion).
+| Fichier | Description |
+|---|---|
+| `index.html` | Structure HTML (onglets, modèles, sections, modal, actions) |
+| `app.js` | Logique applicative (state, rendu, scores, persistance, import/export) |
+| `app.css` | Styles |
+| `README.md` | Ce fichier |
+
+Les trois fichiers doivent être dans le **même répertoire**. Ouvrir `index.html` dans n'importe quel navigateur moderne — aucune installation requise (les liens vers les sites météo nécessitent une connexion internet).
 
 ---
 
@@ -14,7 +21,7 @@ Ouvrir `meteo_competition.html` dans n'importe quel navigateur moderne — aucun
 
 L'outil est divisé en **4 onglets** correspondant aux étapes de la préparation météo.
 
-### Onglet J-3 / J-4 — Grandes mailles
+### Onglet J-3/J-4 — Grandes mailles
 
 À utiliser 3 à 4 jours avant la compétition pour une première analyse de tendance.
 
@@ -30,7 +37,7 @@ Consulter au minimum 2 ou 3 modèles pour croiser les données.
 
 ---
 
-### Onglet J-1 / J-2 — Mailles fines
+### Onglet J-1/J-2 — Mailles fines
 
 À utiliser 24 à 48 h avant la compétition. Utiliser les **derniers runs disponibles** pour le créneau horaire visé.
 
@@ -62,49 +69,69 @@ En plus des modèles mailles fines (mêmes que J-1/J-2), cet onglet ajoute une s
 
 ### Onglet Bilan
 
-Récapitule automatiquement les verdicts et scores des 3 jours et propose une **décision finale recommandée** selon la logique suivante :
+Récapitule automatiquement les verdicts et scores des 3 jours et propose une **décision finale recommandée** :
 
 - Majorité de verdicts **Maintien** → ✅ Maintien recommandé
 - Majorité de verdicts **Annulation** → ❌ Annulation recommandée
 - Cas mixte ou attente → ⏳ Décision en attente
 - Données insuffisantes → — Non renseigné
 
-Un bouton **Imprimer / Exporter PDF** permet de générer une fiche papier ou un PDF via la boîte de dialogue d'impression du navigateur.
+---
+
+## Sauvegarde et gestion des compétitions
+
+### Sauvegarder
+
+Bouton **💾 Sauvegarder** (onglet Bilan) : saisir un nom, confirmer. La compétition est stockée dans le `localStorage` du navigateur. Les données sont persistantes entre les sessions sur le même navigateur et le même appareil.
+
+### Liste des compétitions sauvegardées
+
+Affichée en bas de l'onglet Bilan, triée de la plus récente à la plus ancienne. Pour chaque entrée :
+- **Charger** — restaure l'intégralité des données dans le formulaire (avec confirmation)
+- **JSON ↓** — exporte cette seule compétition en fichier `.json`
+- **✕** — supprime définitivement (avec confirmation)
 
 ---
 
-## Items évalués (communs aux 3 onglets)
+## Export / Import JSON
 
-Pour chaque item, cliquer sur un feu **vert / orange / rouge** pour indiquer le niveau de risque.
+### Export d'une seule compétition
 
-### Analyse des masses d'air
-- Anticyclone / marais barométrique
-- Dépression / front / traîne active
+Bouton **JSON ↓** dans la liste, ou bouton **↓ Export JSON** (exporte l'état courant non sauvegardé après saisie d'un nom).
 
-### Vent météo
-- Vent moyen au sol (force, direction)
-- En altitude (coupes verticales)
-- Brises (force, direction)
-- ⚠️ Pièges aérologiques : foehn, rafales, cisaillements
+### Export de toutes les compétitions
 
-### Nébulosité / Humidité
-- Base nuages / octas, étalements, sur-développements Cb
-- Précipitations : pluie, grêle, neige, brouillard
-- Convection utilisable, sondage, inversion, couche d'arrêt
-- ⚠️ Pièges aérologiques : dust, orage Cb, cisaillements
+Bouton **↓ Tout exporter** — génère un fichier `meteo_competitions_YYYY-MM-DD.json` contenant toutes les compétitions sauvegardées sous forme de tableau JSON.
 
-### Stabilité / Instabilité
-- Indice global de stabilité
+### Import
 
-### Indice de confiance
-- Cohérence et fiabilité des modèles entre eux
-- ⚠️ Sécurité / Risques
+Bouton **↑ Importer JSON** — accepte un fichier `.json` contenant soit un seul objet compétition, soit un tableau. Les compétitions importées sont ajoutées à la liste locale (sans écraser les existantes si les `id` diffèrent).
+
+Le format JSON est utilisable pour sauvegarder des archives hors du navigateur, transférer des données entre appareils, ou effectuer des sauvegardes manuelles.
+
+---
+
+## Évaluation par modèle
+
+Pour chaque critère météo, le tableau affiche **une colonne par modèle**. Cliquer sur un feu vert / orange / rouge dans la colonne du modèle pour noter ce critère selon ce modèle. Cela permet de visualiser directement la convergence ou la divergence des modèles sur chaque point.
+
+### Critères évalués (communs aux 3 onglets)
+
+**Analyse des masses d'air** — Anticyclone / marais barométrique ; Dépression / front / traîne active
+
+**Vent météo** — Vent moyen au sol ; En altitude ; Brises ; ⚠️ Pièges aérologiques (foehn, rafales, cisaillements)
+
+**Nébulosité / Humidité** — Base nuages / octas ; Précipitations ; Convection / sondage ; ⚠️ Pièges aérologiques (dust, orage Cb, cisaillements)
+
+**Stabilité / Instabilité** — Indice global de stabilité
+
+**Indice de confiance** — Cohérence / Fiabilité des modèles ; ⚠️ Sécurité / Risques
 
 ---
 
 ## Score de confiance automatique
 
-À chaque feu allumé, le score favorable est recalculé en temps réel :
+Calculé en temps réel sur l'ensemble des feux actifs (tous critères, tous modèles) :
 
 - Proportion de feux **verts** parmi les feux actifs
 - Barre de progression colorée : verte (≥ 70 %), orange (40–69 %), rouge (< 40 %)
@@ -112,8 +139,6 @@ Pour chaque item, cliquer sur un feu **vert / orange / rouge** pour indiquer le 
 ---
 
 ## Seuils vent indicatifs
-
-À moduler selon le terrain (plaine ou montagne).
 
 | Seuil | Niveau |
 |---|---|
@@ -123,25 +148,22 @@ Pour chaque item, cliquer sur un feu **vert / orange / rouge** pour indiquer le 
 
 ---
 
-## Logique de décision
+## Modifier les modèles ou les critères
 
-> Si tous les voyants sont au vert, la décision est simple.  
-> Plusieurs voyants orange sont des points de vigilance importants.  
-> Si plusieurs modèles convergent, les prévisions sont fiables — en particulier AROME et ICON D2/CH1 sur 48 h, considérés comme les plus précis aujourd'hui.  
-> Évaluer toujours les risques et dangers potentiels pour la sécurité des vols : vent présent et/ou forte instabilité constituent des risques reconnus.
+Dans `app.js`, deux constantes en haut de fichier suffisent :
+- `PAGE_MODELS` — liste des modèles par onglet (index 0 = J-3/J-4, 1 = J-1/J-2, 2 = Jour J)
+- `EVAL_SECTIONS` — liste des sections et critères (label, sous-label optionnel, flag `danger`)
 
----
-
-## Réinitialisation
-
-Le bouton **Réinitialiser tout** (onglet Bilan) efface l'ensemble des saisies après confirmation.
+Modifier uniquement ces deux constantes adapte le contenu sans toucher au reste du code.
 
 ---
 
-## Fichiers
+## Imprimer / Exporter PDF
 
-| Fichier | Description |
-|---|---|
-| `meteo_competition.html` | Application principale (fichier unique, autonome) |
-| `README_FR.md` | Ce fichier |
-| `README_EN.md` | Version anglaise |
+Bouton **🖨 Imprimer / PDF** — ouvre la boîte de dialogue d'impression du navigateur pour générer une fiche papier ou un PDF.
+
+---
+
+## Réinitialiser le formulaire
+
+Bouton **↺ Réinitialiser** (onglet Bilan) — efface toutes les saisies du formulaire après confirmation. Les compétitions sauvegardées dans le localStorage ne sont pas affectées.
