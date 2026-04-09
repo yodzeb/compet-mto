@@ -24,25 +24,6 @@
 <!-- ========== PAGE J-3/J-4 ========== -->
 <div class="page active" id="page0">
 
-  <div class="section">
-    <div class="section-header">Modèles grandes mailles</div>
-    <div class="models">
-      <a class="model-tag" href="https://www.meteociel.fr" target="_blank">ARPEGE 10</a>
-      <a class="model-tag" href="https://www.meteoblue.com" target="_blank">ICON EU 7</a>
-      <a class="model-tag" href="https://www.meteociel.fr" target="_blank">NEMS 12</a>
-      <a class="model-tag" href="https://www.meteociel.fr" target="_blank">ECMWF 9</a>
-      <a class="model-tag" href="https://www.meteoblue.com" target="_blank">WRF 5</a>
-      <a class="model-tag" href="https://www.meteoblue.com" target="_blank">GFS 25</a>
-    </div>
-    <div class="sites">
-      <span style="font-size:11px;color:#888;padding:3px 0;">Sites :</span>
-      <a class="site-link" href="https://www.meteociel.fr" target="_blank">météociel</a>
-      <a class="site-link" href="https://www.meteoblue.com" target="_blank">météoblue</a>
-      <a class="site-link" href="https://www.windy.com" target="_blank">windy</a>
-      <a class="site-link" href="https://www.spotair.co" target="_blank">spotair</a>
-    </div>
-  </div>
-
   <div class="verdict">
     <div class="verdict-label">Maintien / Annulation ?</div>
     <button class="verdict-btn go"   onclick="setVerdict(0,'go')"  >Maintien</button>
@@ -79,27 +60,6 @@
 <!-- ========== PAGE J-1/J-2 ========== -->
 <div class="page" id="page1">
 
-  <div class="section">
-    <div class="section-header">Modèles mailles fines — derniers runs</div>
-    <div class="models">
-      <a class="model-tag" href="https://www.meteociel.fr" target="_blank">AROME 1,3</a>
-      <a class="model-tag" href="https://www.meteociel.fr" target="_blank">AROME 2,5</a>
-      <a class="model-tag" href="https://www.meteoblue.com" target="_blank">ICON D2</a>
-      <a class="model-tag" href="https://www.meteoblue.com" target="_blank">ICON CH1</a>
-      <a class="model-tag" href="https://www.meteociel.fr" target="_blank">NEMS 4</a>
-      <a class="model-tag" href="https://www.drjack.info" target="_blank">RASP</a>
-    </div>
-    <div class="sites">
-      <span style="font-size:11px;color:#888;padding:3px 0;">Sites :</span>
-      <a class="site-link" href="https://www.meteociel.fr" target="_blank">météociel</a>
-      <a class="site-link" href="https://www.windy.com" target="_blank">windy</a>
-      <a class="site-link" href="https://www.meteoblue.com" target="_blank">météoblue</a>
-      <a class="site-link" href="https://www.volibre.com/velivole" target="_blank">vélivole</a>
-      <a class="site-link" href="https://www.xctherm.net" target="_blank">xctherm</a>
-      <a class="site-link" href="https://www.meteoparapente.com" target="_blank">météoparapente</a>
-    </div>
-  </div>
-
   <div class="verdict">
     <div class="verdict-label">Maintien / Annulation ?</div>
     <button class="verdict-btn go"   onclick="setVerdict(1,'go')"  >Maintien</button>
@@ -135,28 +95,6 @@
 
 <!-- ========== PAGE JOUR J ========== -->
 <div class="page" id="page2">
-
-  <div class="section">
-    <div class="section-header">Modèles mailles fines — derniers runs</div>
-    <div class="models">
-      <a class="model-tag" href="https://www.meteociel.fr" target="_blank">AROME 1,3</a>
-      <a class="model-tag" href="https://www.meteociel.fr" target="_blank">AROME 2,5</a>
-      <a class="model-tag" href="https://www.meteoblue.com" target="_blank">ICON D2</a>
-      <a class="model-tag" href="https://www.meteoblue.com" target="_blank">ICON CH1</a>
-      <a class="model-tag" href="https://www.meteociel.fr" target="_blank">NEMS 4</a>
-      <a class="model-tag" href="https://www.drjack.info" target="_blank">RASP</a>
-    </div>
-    <div class="sites">
-      <span style="font-size:11px;color:#888;padding:3px 0;">Sites :</span>
-      <a class="site-link" href="https://www.meteociel.fr" target="_blank">météociel</a>
-      <a class="site-link" href="https://www.windy.com" target="_blank">windy</a>
-      <a class="site-link" href="https://www.meteoblue.com" target="_blank">météoblue</a>
-      <a class="site-link" href="https://www.volibre.com/velivole" target="_blank">vélivole</a>
-      <a class="site-link" href="https://www.xctherm.net" target="_blank">xctherm</a>
-      <a class="site-link" href="https://www.meteoparapente.com" target="_blank">météoparapente</a>
-      <a class="site-link" href="https://www.spotair.co" target="_blank">spotair</a>
-    </div>
-  </div>
 
   <div class="verdict">
     <div class="verdict-label">Maintien / Annulation ?</div>
@@ -229,16 +167,16 @@
 
   <!-- Actions -->
   <div class="action-row" style="margin-bottom:8px;">
-    <button class="action-row save-btn"          onclick="openSaveModal()">💾 Sauvegarder</button>
+    <button class="action-row save-btn"           onclick="openSaveModal()">💾 Sauvegarder</button>
     <button class="action-row export-current-btn" onclick="exportCurrent()">↓ Export JSON</button>
   </div>
   <div class="action-row" style="margin-bottom:12px;">
-    <button class="action-row export-all-btn"    onclick="exportAll()">↓ Tout exporter</button>
-    <button class="action-row import-btn"        onclick="triggerImport()">↑ Importer JSON</button>
+    <button class="action-row export-all-btn"     onclick="exportAll()">↓ Tout exporter</button>
+    <button class="action-row import-btn"         onclick="triggerImport()">↑ Importer JSON</button>
   </div>
   <div class="action-row" style="margin-bottom:12px;">
-    <button class="action-row print-btn"         onclick="window.print()">🖨 Imprimer / PDF</button>
-    <button class="action-row reset-btn"         onclick="resetAll()">↺ Réinitialiser</button>
+    <button class="action-row print-btn"          onclick="window.print()">🖨 Imprimer / PDF</button>
+    <button class="action-row reset-btn"          onclick="resetAll()">↺ Réinitialiser</button>
   </div>
 
   <!-- Saved competitions list -->
